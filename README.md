@@ -25,7 +25,7 @@ npm install minehut-api
 ## Usage
 
 ```ts
-import { Minehut } from ".";
+import { Minehut } from "minehut-api";
 
 (async () => {
     const mh = new Minehut();
