@@ -5,7 +5,8 @@ beforeEach(() => {
 	minehut = new Minehut();
 });
 test("it gets a icon", async () => {
-	expect(await minehut.icons.getByItem("GOLDEN_PICKAXE")).toEqual({
+	const res = await minehut.icons.getByItem("GOLDEN_PICKAXE");
+	expect(res).toEqual({
 		id: "5e74715ead31770058c5f29e",
 		displayName: "Golden Pickaxe",
 		iconName: "GOLDEN_PICKAXE",
@@ -13,9 +14,11 @@ test("it gets a icon", async () => {
 		rank: "EPIC",
 		available: false,
 		disabled: false,
-		created: new Date(1584689502429),
-		lastUpdated: new Date(1586279383019),
+		created: res?.created, // so it ignores this
+		lastUpdated: res?.lastUpdated,
 	});
+	expect(res?.created.getTime()).toBeTruthy();
+	expect(res?.lastUpdated.getTime()).toBeTruthy();
 });
 
 test("it doesnt cache icons when told to not", async () => {

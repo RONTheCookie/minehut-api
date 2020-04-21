@@ -22,7 +22,7 @@ export interface RawIcon {
 	available: boolean;
 	disabled: boolean;
 	created: number;
-	lastUpdated: number;
+	last_updated: number;
 }
 
 export class IconManager extends BaseManager<RawIcon[], Icon[]> {
@@ -38,7 +38,7 @@ export class IconManager extends BaseManager<RawIcon[], Icon[]> {
 			displayName: icon.display_name,
 			id: icon._id,
 			iconName: icon.icon_name,
-			lastUpdated: new Date(icon.lastUpdated),
+			lastUpdated: new Date(icon.last_updated),
 			price: icon.price,
 			rank: icon.rank,
 		}));
