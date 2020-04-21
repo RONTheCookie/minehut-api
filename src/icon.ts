@@ -1,7 +1,7 @@
-import BaseManager from "./baseManager";
-import Minehut from ".";
+import { BaseManager } from "./baseManager";
+import { Minehut } from "./minehut";
 
-export default interface Icon {
+export interface Icon {
     id: string;
     displayName: string;
     iconName: string;
@@ -13,7 +13,7 @@ export default interface Icon {
     lastUpdated: Date;
 }
 
-export interface RawIcon {
+interface RawIcon {
     _id: string;
     display_name: string;
     icon_name: string;

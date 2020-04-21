@@ -1,7 +1,7 @@
-import BaseManager from "./baseManager";
-import Minehut from ".";
+import { BaseManager } from "./baseManager";
+import { Minehut } from "./minehut";
 
-export default interface Plugin {
+export interface Plugin {
     id: string;
     name: string;
     credits: number;

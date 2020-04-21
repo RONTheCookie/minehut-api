@@ -1,7 +1,7 @@
-import Icon from "./icon";
-import BaseManager from "./baseManager";
-import Minehut from ".";
-import DetailedServerManager, { DetailedServer } from "./detailedServer";
+import { Icon } from "./icon";
+import { BaseManager } from "./baseManager";
+import { Minehut } from "./minehut";
+import { DetailedServerManager, DetailedServer } from "./detailedServer";
 
 interface BaseServer {
     playerCount: number;
@@ -28,7 +28,7 @@ interface RawServer extends BaseServer {
     updated: number;
 }
 
-export default interface Server extends BaseServer {
+export interface Server extends BaseServer {
     id: string;
     icon?: Icon;
     lastMetricsUpdate: Date;

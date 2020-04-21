@@ -1,7 +1,7 @@
-import Icon from "./icon";
-import Plugin from "./plugin";
-import KVManager from "./kvManager";
-import Minehut from ".";
+import { Icon } from "./icon";
+import { Plugin } from "./plugin";
+import { KVManager } from "./kvManager";
+import { Minehut } from "./minehut";
 
 interface RawDetailedServer {
     credits_per_day: number;
@@ -99,7 +99,7 @@ export interface DetailedServer {
     players: string[];
 }
 
-export default class DetailedServerManager extends KVManager<
+export class DetailedServerManager extends KVManager<
     RawDetailedServerResponse,
     DetailedServer
 > {

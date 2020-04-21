@@ -1,6 +1,6 @@
-import Minehut from ".";
+import { Minehut } from "./minehut";
 
-abstract class KVManager<O, T> {
+export abstract class KVManager<O, T> {
     constructor(public client: Minehut, private url: string) {}
     cache: Map<string, T> = new Map();
 
@@ -19,5 +19,3 @@ abstract class KVManager<O, T> {
 
     abstract async transform(key: string, data: O): Promise<T>;
 }
-
-export default KVManager;

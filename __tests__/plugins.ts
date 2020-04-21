@@ -1,4 +1,4 @@
-import Minehut from "../src";
+import { Minehut } from "../src";
 let minehut: Minehut;
 
 beforeEach(() => {

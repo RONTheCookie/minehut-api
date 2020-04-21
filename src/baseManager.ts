@@ -1,6 +1,6 @@
-import Minehut from ".";
+import { Minehut } from "./minehut";
 
-abstract class BaseManager<O, T> {
+export abstract class BaseManager<O, T> {
     constructor(public client: Minehut, private url: string) {}
     cache?: T;
 
@@ -17,5 +17,3 @@ abstract class BaseManager<O, T> {
 
     abstract async transform(data: O): Promise<T>;
 }
-
-export default BaseManager;
