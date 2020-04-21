@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
-import { IconManager } from "./icon";
-import { ServerManager } from "./server";
-import { PluginManager } from "./plugin";
+import { IconManager } from "./objects/icon";
+import { ServerManager } from "./objects/server";
+import { PluginManager } from "./objects/plugin";
 
 export class Minehut {
     BASE_URL = "https://api.minehut.com";

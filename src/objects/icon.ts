@@ -1,5 +1,5 @@
-import { BaseManager } from "./baseManager";
-import { Minehut } from "./minehut";
+import { BaseManager } from "../managers/baseManager";
+import { Minehut } from "../minehut";
 
 export interface Icon {
     id: string;

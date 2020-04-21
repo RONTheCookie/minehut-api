@@ -1,4 +1,4 @@
-import { Minehut } from "./minehut";
+import { Minehut } from "../minehut";
 
 export abstract class BaseManager<O, T> {
     constructor(public client: Minehut, private url: string) {}

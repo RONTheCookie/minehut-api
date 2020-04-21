@@ -1,7 +1,7 @@
 import { Icon } from "./icon";
 import { Plugin } from "./plugin";
-import { KVManager } from "./kvManager";
-import { Minehut } from "./minehut";
+import { KVManager } from "../managers/kvManager";
+import { Minehut } from "../minehut";
 
 interface RawDetailedServer {
     credits_per_day: number;

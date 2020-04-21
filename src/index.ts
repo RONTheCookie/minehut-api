@@ -1,5 +1,8 @@
 export { Minehut } from "./minehut";
-export { ServerManager, Server } from "./server";
-export { Plugin, PluginManager } from "./plugin";
-export { Icon, IconManager } from "./icon";
-export { DetailedServer, DetailedServerManager } from "./detailedServer";
+export { ServerManager, Server } from "./objects/server";
+export { Plugin, PluginManager } from "./objects/plugin";
+export { Icon, IconManager } from "./objects/icon";
+export {
+    DetailedServer,
+    DetailedServerManager
+} from "./objects/detailedServer";

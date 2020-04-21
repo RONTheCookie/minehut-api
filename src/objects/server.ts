@@ -1,6 +1,6 @@
 import { Icon } from "./icon";
-import { BaseManager } from "./baseManager";
-import { Minehut } from "./minehut";
+import { BaseManager } from "../managers/baseManager";
+import { Minehut } from "../minehut";
 import { DetailedServerManager, DetailedServer } from "./detailedServer";
 
 interface BaseServer {
