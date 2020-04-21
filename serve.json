@@ -1,0 +1,14 @@
+{
+	"headers": [
+		{
+			"source": "**/*",
+			"headers": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			]
+		}
+	],
+	"rewrites": [{ "source": "servers", "destination": "/servers/index" }]
+}
