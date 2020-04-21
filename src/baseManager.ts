@@ -12,10 +12,8 @@ abstract class BaseManager<O, T> {
 		if (!noCache) this.cache = res;
 		return res;
 	}
-}
 
-interface BaseManager<O, T> {
-	transform(data: O): Promise<T>;
+	abstract async transform(data: O): Promise<T>;
 }
 
 export default BaseManager;
