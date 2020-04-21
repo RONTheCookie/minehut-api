@@ -1,0 +1,25 @@
+{
+	"name": "minehut-api",
+	"version": "2.0.0",
+	"description": "Minehut API wrapper for TypeScript",
+	"main": "dist/src/index.js",
+	"types": "dist/src/index.ts.d",
+	"repository": "git@github.com:ronthecookie/minehut-api.git",
+	"author": "Ron B <me@ronthecookie.me>",
+	"license": "LGPL-3.0",
+	"devDependencies": {
+		"@types/jest": "^25.2.1",
+		"@types/node": "^13.13.1",
+		"@types/node-fetch": "^2.5.6",
+		"jest": "^25.4.0",
+		"ts-jest": "^25.4.0",
+		"ts-node": "^8.9.0",
+		"typescript": "^3.8.3"
+	},
+	"dependencies": {
+		"node-fetch": "^2.6.0"
+	},
+	"scripts": {
+		"test": "jest"
+	}
+}
