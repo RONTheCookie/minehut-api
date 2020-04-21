@@ -1,7 +1,7 @@
 import BaseManager from "./baseManager";
 import Minehut from ".";
 
-interface Plugin {
+export default interface Plugin {
 	id: string;
 	name: string;
 	credits: number;

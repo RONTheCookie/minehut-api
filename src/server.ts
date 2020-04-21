@@ -1,6 +1,7 @@
 import Icon from "./icon";
 import BaseManager from "./baseManager";
 import Minehut from ".";
+import DetailedServerManager from "./detailedServer";
 
 interface BaseServer {
 	playerCount: number;
@@ -44,6 +45,7 @@ interface RawServerResponse {
 }
 
 export class ServerManager extends BaseManager<RawServerResponse, Server[]> {
+	detailed: DetailedServerManager = new DetailedServerManager(this.client);
 	constructor(client: Minehut) {
 		super(client, "/servers");
 	}
