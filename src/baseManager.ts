@@ -1,18 +1,21 @@
 import Minehut from ".";
 
-abstract class BaseManager<T> {
+abstract class BaseManager<O, T> {
 	constructor(public client: Minehut, private url: string) {}
-	private cache?: T;
+	cache?: T;
 
 	async fetch(noCache: boolean = false): Promise<T> {
 		if (this.cache && !noCache) return this.cache;
-		this.cache = (await this.client.fetchJSON(this.url)) as T;
-		return await this.fetch();
+		const res = await this.transform(
+			(await this.client.fetchJSON(this.url)) as O
+		);
+		if (!noCache) this.cache = res;
+		return res;
 	}
 }
 
-interface BaseManager<T> {
-	postfetch(data: T): Promise<T>;
+interface BaseManager<O, T> {
+	transform(data: O): Promise<T>;
 }
 
 export default BaseManager;
