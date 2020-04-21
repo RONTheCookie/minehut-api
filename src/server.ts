@@ -3,7 +3,7 @@ import BaseManager from "./baseManager";
 import Minehut from ".";
 
 interface Server {
-	_id: string;
+	id: string;
 	playerCount: number;
 	online: boolean;
 	timeNoPlayers: number;
@@ -17,7 +17,6 @@ interface Server {
 	stopping: boolean;
 	exited: boolean;
 	status: "ONLINE";
-
 	icon?: Icon;
 	lastMetricsUpdate: number;
 	lastStatusChange: number;
@@ -35,7 +34,7 @@ export class ServerManager extends BaseManager<Server[]> {
 		return await Promise.all(
 			data.map(async (server) => {
 				server.icon = (await this.client.icons.fetch()).find(
-					(icon) => icon.icon_name
+					(icon) => icon.iconName
 				);
 				return server;
 			})

@@ -2,15 +2,15 @@ import BaseManager from "./baseManager";
 import Minehut from ".";
 
 export default interface Icon {
-	_id: string;
-	display_name: string;
-	icon_name: string;
+	id: string;
+	displayName: string;
+	iconName: string;
 	price: number;
 	rank: "EPIC" | "RARE" | "LEGENDARY" | "COMMON" | "UNCOMMON";
 	available: boolean;
 	disabled: boolean;
 	created: number;
-	last_updated: number;
+	lastUpdated: number;
 }
 
 export class IconManager extends BaseManager<Icon[]> {

@@ -11,7 +11,7 @@ export default class Minehut {
 		const res = await fetch(this.BASE_URL + path);
 		if (!res.ok)
 			throw new Error(
-				`http error while fetching ${path}: ${res.statusText}`
+				`HTTP error while fetching ${path}: ${res.statusText}`
 			);
 		return await res.json();
 	}
