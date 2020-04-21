@@ -10,7 +10,7 @@ export default class Minehut {
 	async fetchJSON(path: string) {
 		const res = await fetch(this.BASE_URL + path, {
 			headers: {
-				"User-Agent": `minehut-api/${
+				"User-Agent": `node-minehut-api/${
 					require("../package.json").version
 				}`,
 			},
