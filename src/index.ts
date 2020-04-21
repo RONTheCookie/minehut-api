@@ -8,11 +8,19 @@ export default class Minehut {
 	servers: ServerManager = new ServerManager(this);
 
 	async fetchJSON(path: string) {
-		const res = await fetch(this.BASE_URL + path);
+		const res = await fetch(this.BASE_URL + path, {
+			headers: {
+				"User-Agent": `minehut-api/${
+					require("../package.json").version
+				}`,
+			},
+		});
 		if (!res.ok)
 			throw new Error(
 				`HTTP error while fetching ${path}: ${res.statusText}`
 			);
+		if (process.env.DEBUG == "minehut-api")
+			console.debug(`HTTP GET ${path}`);
 		return await res.json();
 	}
 }

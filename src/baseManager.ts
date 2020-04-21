@@ -4,12 +4,14 @@ abstract class BaseManager<O, T> {
 	constructor(public client: Minehut, private url: string) {}
 	cache?: T;
 
-	async fetch(noCache: boolean = false): Promise<T> {
-		if (this.cache && !noCache) return this.cache;
+	async fetch(cache: boolean = true): Promise<T> {
+		if (this.cache && cache) {
+			return this.cache;
+		}
 		const res = await this.transform(
 			(await this.client.fetchJSON(this.url)) as O
 		);
-		if (!noCache) this.cache = res;
+		if (cache) this.cache = res;
 		return res;
 	}
 

@@ -1,8 +1,6 @@
 import Minehut from "../src";
 let minehut: Minehut;
 
-jest.setTimeout(1000 * 10);
-
 beforeEach(() => {
 	minehut = new Minehut();
 });
@@ -24,12 +22,12 @@ test("it gets a icon", async () => {
 });
 
 test("it doesnt cache icons when told to not", async () => {
-	await minehut.icons.fetch(true);
+	await minehut.icons.fetch(false);
 	expect(minehut.icons.cache).toBeFalsy();
 });
 
 test("it does cache icons when told to", async () => {
-	await minehut.icons.fetch(false);
+	await minehut.icons.fetch();
 	expect(minehut.icons.cache).toBeTruthy();
 });
 

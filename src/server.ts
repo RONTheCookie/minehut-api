@@ -49,6 +49,7 @@ export class ServerManager extends BaseManager<RawServerResponse, Server[]> {
 	}
 
 	async transform(data: RawServerResponse): Promise<Server[]> {
+		const icons = await this.client.icons.fetch();
 		return await Promise.all(
 			data.servers.map(async (raw) => ({
 				id: raw._id,
@@ -69,9 +70,7 @@ export class ServerManager extends BaseManager<RawServerResponse, Server[]> {
 				timeNoPlayers: raw.timeNoPlayers,
 				updated: new Date(raw.updated),
 				visibility: raw.visibility,
-				icon: (await this.client.icons.fetch()).find(
-					(x) => x.iconName == raw.icon
-				),
+				icon: icons.find((x) => x.iconName == raw.icon),
 			}))
 		);
 	}
