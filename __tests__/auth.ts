@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import { Minehut } from "../src";
 let minehut: Minehut;
+dotenv.config();
 
 beforeEach(() => {
     minehut = new Minehut();
-    dotenv.config();
 });
 
 test("it logs in", async () => {
