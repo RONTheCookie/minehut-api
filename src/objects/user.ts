@@ -45,31 +45,7 @@ interface User {
     servers: DetailedServer[];
 }
 class User {
-    //noserver cache or static why not cache,
     constructor(public client: Minehut) {}
-    async fromRawUser(user: RawUser) {
-        this.id = user._id;
-        this.emailInfo = {
-            email: user.email,
-            verified: user.email_verified,
-            sentAt: new Date(user.email_sent_at),
-            code: user.email_code
-        };
-        this.credits = user.credits;
-        this.lastLogin = new Date(user.last_login);
-        this.lastPasswordChange = user.last_password_change;
-        if (user.minecraft_last_link_time)
-            this.minecraftInfo = {
-                linkCode: user.minecraft_link_code,
-                lastLinkTime: new Date(user.minecraft_last_link_time),
-                username: user.minecraft_name,
-                uuid: user.minecraft_uuid
-            };
-        this.maxServers = user.max_servers;
-        this.servers = await Promise.all(
-            user.servers.map((id) => this.client.servers.fetchOne(id))
-        );
-    }
 }
 
 export class UserManager extends KVManager<RawUserResponse, User> {
@@ -78,12 +54,28 @@ export class UserManager extends KVManager<RawUserResponse, User> {
     }
 
     async transform(key: string, { user }: RawUserResponse): Promise<User> {
-        const servers = await Promise.all(
-            user.servers.map((id: string) => this.client.servers.fetchOne(id))
-        );
-        //  u remove my code
         const u = new User(this.client);
-        u.fromRawUser(user);
+        u.id = user._id;
+        u.emailInfo = {
+            email: user.email,
+            verified: user.email_verified,
+            sentAt: new Date(user.email_sent_at),
+            code: user.email_code
+        };
+        u.credits = user.credits;
+        u.lastLogin = new Date(user.last_login);
+        u.lastPasswordChange = user.last_password_change;
+        if (user.minecraft_last_link_time)
+            u.minecraftInfo = {
+                linkCode: user.minecraft_link_code,
+                lastLinkTime: new Date(user.minecraft_last_link_time),
+                username: user.minecraft_name,
+                uuid: user.minecraft_uuid
+            };
+        u.maxServers = user.max_servers;
+        u.servers = await Promise.all(
+            user.servers.map((id) => this.client.servers.fetchOne(id))
+        );
         return u;
     }
 }

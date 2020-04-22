@@ -99,6 +99,10 @@ export interface DetailedServer {
     players: string[];
 }
 
+export class DetailedServer {
+    constructor(public client: Minehut) {}
+}
+
 export class DetailedServerManager extends KVManager<
     RawDetailedServerResponse,
     DetailedServer
@@ -115,54 +119,54 @@ export class DetailedServerManager extends KVManager<
         key: string,
         { server }: RawDetailedServerResponse
     ): Promise<DetailedServer> {
+        const s = new DetailedServer(this.client);
         const plugins = await this.client.plugins.fetch();
         const icons = await this.client.icons.fetch();
         const props = server.server_properties;
-        return {
-            activePlugins: plugins.filter((p) =>
-                server.active_plugins.includes(p.id)
-            ),
-            creation: new Date(server.creation),
-            creditsPerDay: server.credits_per_day,
-            id: server._id,
-            lastOnline: new Date(server.last_online),
-            maxPlayers: server.maxPlayers,
-            motd: server.motd,
-            name: server.name,
-            online: server.online,
-            owner: server.owner,
-            platform: server.platform,
-            playerCount: server.playerCount,
-            players: server.players,
-            port: server.port,
-            purchasedIcons: icons.filter((i) =>
-                server.purchased_icons.includes(i.id)
-            ),
-            serverProperties: {
-                allowFlight: props.allow_flight,
-                allowNether: props.allow_nether,
-                announcePlayerAchievements: props.announce_player_achievements,
-                difficulty: props.difficulty,
-                enableCommandBlock: props.enable_command_block,
-                forceGamemode: props.force_gamemode,
-                gamemode: props.gamemode,
-                generateStructures: props.generate_structures,
-                generatorSettings: props.generator_settings,
-                hardcore: props.hardcore,
-                levelName: props.level_name,
-                levelSeed: props.level_seed,
-                levelType: props.level_type,
-                maxPlayers: props.max_players,
-                pvp: props.pvp,
-                resourcePack: props.resource_pack,
-                resourcePackSha1: props.resource_pack_sha1,
-                spawnAnimals: props.spawn_animals,
-                spawnMobs: props.spawn_mobs,
-                spawnProtection: props.spawn_protection,
-                viewDistance: props.view_distance
-            },
-            suspended: server.suspended,
-            visibility: server.visibility
+        s.activePlugins = plugins.filter((p) =>
+            server.active_plugins.includes(p.id)
+        );
+        s.creation = new Date(server.creation);
+        s.creditsPerDay = server.credits_per_day;
+        s.id = server._id;
+        s.lastOnline = new Date(server.last_online);
+        s.maxPlayers = server.maxPlayers;
+        s.motd = server.motd;
+        s.name = server.name;
+        s.online = server.online;
+        s.owner = server.owner;
+        s.platform = server.platform;
+        s.playerCount = server.playerCount;
+        s.players = server.players;
+        s.port = server.port;
+        s.purchasedIcons = icons.filter((i) =>
+            server.purchased_icons.includes(i.id)
+        );
+        s.serverProperties = {
+            allowFlight: props.allow_flight,
+            allowNether: props.allow_nether,
+            announcePlayerAchievements: props.announce_player_achievements,
+            difficulty: props.difficulty,
+            enableCommandBlock: props.enable_command_block,
+            forceGamemode: props.force_gamemode,
+            gamemode: props.gamemode,
+            generateStructures: props.generate_structures,
+            generatorSettings: props.generator_settings,
+            hardcore: props.hardcore,
+            levelName: props.level_name,
+            levelSeed: props.level_seed,
+            levelType: props.level_type,
+            maxPlayers: props.max_players,
+            pvp: props.pvp,
+            resourcePack: props.resource_pack,
+            resourcePackSha1: props.resource_pack_sha1,
+            spawnAnimals: props.spawn_animals,
+            spawnMobs: props.spawn_mobs,
+            spawnProtection: props.spawn_protection,
+            viewDistance: props.view_distance
         };
+        s.suspended = server.suspended;
+        s.visibility = server.visibility;
+        return s;
     }
 }
