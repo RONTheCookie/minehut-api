@@ -4,6 +4,7 @@ import { ServerManager } from "./objects/server";
 import { PluginManager } from "./objects/plugin";
 import { UserManager, User } from "./objects/user";
 import { stringify } from "querystring";
+import { MinehutAPIError } from ".";
 
 export class Minehut {
     BASE_URL = "https://api.minehut.com";
@@ -35,7 +36,10 @@ export class Minehut {
             console.debug({ reqBody: body, resBody });
         }
 
-        if (resBody.error) throw new Error(resBody.error);
+        if (resBody.error)
+            throw new MinehutAPIError(
+                resBody.error.substring(6, resBody.error.length)
+            );
         if (!res.ok)
             throw new Error(
                 `HTTP error while fetching ${path}: ${res.status} ${res.statusText}`

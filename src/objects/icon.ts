@@ -25,6 +25,8 @@ interface RawIcon {
     last_updated: number;
 }
 
+export type IconResolvable = string | Icon;
+
 export class IconManager extends BaseManager<RawIcon[], Icon[]> {
     constructor(client: Minehut) {
         super(client, "/servers/icons");
@@ -44,7 +46,10 @@ export class IconManager extends BaseManager<RawIcon[], Icon[]> {
         }));
     }
 
-    async getByItem(n: string) {
-        return (await this.fetch()).find((icon) => icon.iconName == n);
+    async resolve(resolvable: IconResolvable) {
+        if (!this.cache) this.cache = await this.fetch(false);
+        if (typeof resolvable === "object" && resolvable.id)
+            return this.cache.find((i) => resolvable.id === i.id);
+        return this.cache.find((i) => resolvable === i.id);
     }
 }

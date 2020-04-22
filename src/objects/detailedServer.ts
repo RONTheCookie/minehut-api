@@ -1,4 +1,4 @@
-import { Icon } from "./icon";
+import { Icon, IconResolvable } from "./icon";
 import { Plugin } from "./plugin";
 import { KVManager } from "../managers/kvManager";
 import { Minehut } from "../minehut";
@@ -101,6 +101,93 @@ export interface DetailedServer {
 
 export class DetailedServer {
     constructor(public client: Minehut) {}
+
+    async setName(name: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetchJSON(`/server/${this.id}/change_name`, "POST", {
+            name
+        });
+    }
+
+    async start(service: boolean = true) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        if (service)
+            await this.client.fetchJSON(
+                `/server/${this.id}/start_service`,
+                "POST"
+            );
+        else await this.client.fetchJSON(`/server/${this.id}/start`, "POST");
+    }
+
+    async restart() {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetchJSON(`/server/${this.id}/restart`, "POST");
+    }
+
+    async stop(service: boolean = false) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        if (!service)
+            await this.client.fetchJSON(`/server/${this.id}/shutdown`, "POST");
+        else
+            await this.client.fetchJSON(
+                `/server/${this.id}/destroy_service`,
+                "POST"
+            );
+    }
+
+    async setMOTD(motd: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetchJSON(`/server/${this.id}/change_motd`, "POST", {
+            motd
+        });
+    }
+
+    async sendCommand(command: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetchJSON(`/server/${this.id}/send_command`, "POST", {
+            command
+        });
+    }
+
+    async setVisibility(visibility: boolean) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetchJSON(`/server/${this.id}/visibility`, "POST", {
+            visibility
+        });
+    }
+
+    async purchaseIcon(resolvable: IconResolvable) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const icon = await this.client.icons.resolve(resolvable);
+        if (!icon) throw new Error("Icon not found.");
+        await this.client.fetchJSON(
+            `/server/${this.id}/icon/purchase`,
+            "POST",
+            {
+                icon_id: icon
+            }
+        );
+    }
+
+    async editProps(props: Partial<ServerProps>) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const fetchArray: Promise<void>[] = [];
+        Object.keys(props).forEach((prop) => {
+            fetchArray.push(
+                this.client.fetchJSON(
+                    `/server/${this.id}/edit_server_properties`,
+                    "POST",
+                    {
+                        field: prop.replace(
+                            /([A-Z])/g,
+                            (e: string) => "_" + e.toLowerCase()
+                        ),
+                        value: props[prop]
+                    }
+                )
+            );
+        });
+    }
 }
 
 export class DetailedServerManager extends KVManager<
