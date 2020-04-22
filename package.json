@@ -3,7 +3,7 @@
     "version": "2.0.0",
     "description": "Minehut API wrapper for TypeScript",
     "main": "dist/src/index.js",
-    "types": "dist/src/index.ts.d",
+    "types": "dist/src/index.d.ts",
     "repository": "git@github.com:ronthecookie/minehut-api.git",
     "author": "Ron B <me@ronthecookie.me>",
     "license": "LGPL-3.0",
