@@ -74,7 +74,7 @@ class User {
 
 export class UserManager extends KVManager<RawUserResponse, User> {
     constructor(client: Minehut) {
-        super(client, "/users/%s");
+        super(client, "/user/%s");
     }
 
     async transform(key: string, { user }: RawUserResponse): Promise<User> {

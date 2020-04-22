@@ -1,8 +1,9 @@
-import fetch, { Headers } from "node-fetch";
+import fetch from "node-fetch";
 import { IconManager } from "./objects/icon";
 import { ServerManager } from "./objects/server";
 import { PluginManager } from "./objects/plugin";
 import { UserManager, User } from "./objects/user";
+import { stringify } from "querystring";
 
 export class Minehut {
     BASE_URL = "https://api.minehut.com";
@@ -20,23 +21,26 @@ export class Minehut {
                 "User-Agent": `node-minehut-api/${
                     require("../package.json").version
                 }`,
-                Authorization: "",
-                "X-Session-Id": ""
+                "Content-Type": body ? "application/json" : "",
+                Accept: "application/json",
+                Authorization: this.auth?.token || "",
+                "X-Session-Id": this.auth?.sessionId || ""
             },
             body: JSON.stringify(body)
         };
-        if (this.auth) {
-            settings.headers.Authorization = this.auth.token;
-            settings.headers["X-Session-Id"] = this.auth.sessionId;
-        }
         const res = await fetch(this.BASE_URL + path, settings);
+        const resBody = await res.json();
+        if (process.env.DEBUG == "minehut-api") {
+            console.debug(`HTTP ${method}: ${path}`);
+            console.debug({ reqBody: body, resBody });
+        }
+
+        if (resBody.error) throw new Error(resBody.error);
         if (!res.ok)
             throw new Error(
-                `HTTP error while fetching ${path}: ${res.statusText}`
+                `HTTP error while fetching ${path}: ${res.status} ${res.statusText}`
             );
-        if (process.env.DEBUG == "minehut-api")
-            console.debug(`HTTP GET ${path}`);
-        return await res.json();
+        return await resBody;
     }
 
     async login(email: string, password: string) {
@@ -50,6 +54,8 @@ export class Minehut {
             sessionId: string;
         };
         this.auth = { sessionId: res.sessionId, token: res.token };
+        if (process.env.DEBUG == "minehut-api")
+            console.debug("logged in; user now");
         this.user = await this.users.fetch(res._id);
     }
 }
