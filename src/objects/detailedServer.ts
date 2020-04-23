@@ -2,6 +2,7 @@ import { Icon, IconResolvable } from "./icon";
 import { Plugin } from "./plugin";
 import { KVManager } from "../managers/kvManager";
 import { Minehut } from "../minehut";
+import { stringify } from "querystring";
 
 interface RawDetailedServer {
     credits_per_day: number;
@@ -172,22 +173,30 @@ export class DetailedServer {
     async editProps(props: Partial<ServerProps>) {
         if (!this.client.auth) throw new Error("Not logged in.");
         const fetchArray: Promise<void>[] = [];
-        Object.keys(props).forEach((prop) => {
-            fetchArray.push(
-                this.client.fetchJSON(
-                    `/server/${this.id}/edit_server_properties`,
-                    "POST",
-                    {
-                        field: prop.replace(
-                            /([A-Z])/g,
-                            (e: string) => "_" + e.toLowerCase()
-                        ),
-                        value: props[prop]
-                    }
-                )
-            );
-        });
+        Object.entries(props).forEach(
+            ([field, value]: [
+                string,
+                string | boolean | number | undefined
+            ]) => {
+                fetchArray.push(
+                    this.client.fetchJSON(
+                        `/server/${this.id}/edit_server_properties`,
+                        "POST",
+                        {
+                            field: field.replace(
+                                /[A-Z]/g,
+                                (e) => "_" + e.toLowerCase()
+                            ),
+                            value
+                        }
+                    )
+                );
+            }
+        );
+        await Promise.all(fetchArray);
     }
+
+    async installPlugin() {}
 }
 
 export class DetailedServerManager extends KVManager<

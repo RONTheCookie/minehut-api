@@ -37,6 +37,8 @@ interface RawPluginResponse {
     bedrock: RawPlugin[];
 }
 
+type PluginResolvable = string | Plugin;
+
 export class PluginManager extends BaseManager<RawPluginResponse, Plugin[]> {
     constructor(client: Minehut) {
         super(client, "/plugins_public");
@@ -57,5 +59,12 @@ export class PluginManager extends BaseManager<RawPluginResponse, Plugin[]> {
             platform: x.platform,
             version: x.version
         }));
+    }
+
+    async resolve(resolvable: PluginResolvable) {
+        if (!this.cache) this.cache = await this.fetch(false);
+        if (typeof resolvable === "object" && resolvable.id)
+            return this.cache.find((i) => resolvable.id === i.id);
+        return this.cache.find((i) => resolvable === i.id);
     }
 }
