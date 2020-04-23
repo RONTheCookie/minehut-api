@@ -52,26 +52,32 @@ export class FileManager extends KVManager<RawFileReadResponse, File> {
             const { files } = (await this.client.fetchJSON(
                 `/file/${this.serverID}/list${current.path}`
             )) as RawFileListResponse;
-            files
-                .map(
-                    (f) =>
-                        ({
-                            blocked: f.blocked,
-                            children: [],
-                            name: f.name,
-                            path: current.path + `/${f.name}`,
-                            type: f.directory
-                                ? FileNodeType.DIRECTORY
-                                : FileNodeType.FILE,
-                            parent: current
-                        } as FileNode)
-                )
-                .forEach(async (f) => {
-                    current.children.push(f);
-                    await this.traverseTree(f);
-                });
+            await Promise.all(
+                files
+                    .map(
+                        (f) =>
+                            ({
+                                blocked: f.blocked,
+                                children: [],
+                                name: f.name,
+                                path:
+                                    current.path +
+                                    (current.parent ? "/" : "") +
+                                    f.name,
+                                type: f.directory
+                                    ? FileNodeType.DIRECTORY
+                                    : FileNodeType.FILE,
+                                parent: current
+                            } as FileNode)
+                    )
+                    .map(async (f) => {
+                        current.children.push(f);
+                        await this.traverseTree(f);
+                    })
+            );
         }
         if (!current.parent) this.treeRoot = current;
+        return current;
     }
 
     async transform(

@@ -3,7 +3,6 @@ import { IconManager } from "./objects/icon";
 import { ServerManager } from "./objects/server";
 import { PluginManager } from "./objects/plugin";
 import { UserManager, User } from "./objects/user";
-import { stringify } from "querystring";
 
 export class Minehut {
     BASE_URL = "https://api.minehut.com";

@@ -6,3 +6,4 @@ export {
     DetailedServer,
     DetailedServerManager
 } from "./objects/detailedServer";
+export { FileManager, File } from "./objects/files";
