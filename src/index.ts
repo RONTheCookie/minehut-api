@@ -7,10 +7,10 @@ export {
     DetailedServerManager
 } from "./objects/detailedServer";
 
-export class MinehutAPIError extends Error {
-    constructor(message: string) {
+export class MinehutError extends Error {
+    name = "MinehutError";
+    constructor(message: string, public path: string, public status: string) {
         super(message);
-        this.name = "Minehut API Error";
-        Error.captureStackTrace(this, MinehutAPIError);
+        Error.captureStackTrace(this, MinehutError);
     }
 }

@@ -37,7 +37,7 @@ interface RawPluginResponse {
     bedrock: RawPlugin[];
 }
 
-type PluginResolvable = string | Plugin;
+export type PluginResolvable = string | Plugin;
 
 export class PluginManager extends BaseManager<RawPluginResponse, Plugin[]> {
     constructor(client: Minehut) {

@@ -4,7 +4,7 @@ import { ServerManager } from "./objects/server";
 import { PluginManager } from "./objects/plugin";
 import { UserManager, User } from "./objects/user";
 import { stringify } from "querystring";
-import { MinehutAPIError } from ".";
+import { MinehutError } from ".";
 
 export class Minehut {
     BASE_URL = "https://api.minehut.com";
@@ -37,12 +37,56 @@ export class Minehut {
         }
 
         if (resBody.error)
-            throw new MinehutAPIError(
-                resBody.error.substring(6, resBody.error.length)
+            throw new MinehutError(
+                resBody.error.substring(6, resBody.error.length),
+                path,
+                `${res.status} ${res.statusText}`
             );
         if (!res.ok)
-            throw new Error(
-                `HTTP error while fetching ${path}: ${res.status} ${res.statusText}`
+            throw new MinehutError(
+                `Error while fetching ${method} ${path}`,
+                path,
+                `${res.status} ${res.statusText}`
+            );
+        return resBody;
+    }
+
+    async fetch(
+        path: string,
+        method: string = "GET",
+        body?: any,
+        headers?: object
+    ) {
+        const settings = {
+            method,
+            headers: {
+                "User-Agent": `node-minehut-api/${
+                    require("../package.json").version
+                }`,
+                ...headers,
+                Authorization: this.auth?.token || "",
+                "X-Session-Id": this.auth?.sessionId || ""
+            },
+            body
+        };
+        const res = await fetch(this.BASE_URL + path, settings);
+        const resBody = await res.json();
+        if (process.env.DEBUG == "minehut-api") {
+            console.debug(`HTTP ${method}: ${path}`);
+            console.debug({ reqBody: body, resBody });
+        }
+
+        if (resBody.error)
+            throw new MinehutError(
+                resBody.error.substring(6, resBody.error.length),
+                path,
+                `${res.status} ${res.statusText}`
+            );
+        if (!res.ok)
+            throw new MinehutError(
+                `Error while fetching ${method} ${path}`,
+                path,
+                `${res.status} ${res.statusText}`
             );
         return await resBody;
     }
