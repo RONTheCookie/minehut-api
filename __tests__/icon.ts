@@ -5,7 +5,7 @@ beforeEach(() => {
     minehut = new Minehut();
 });
 test("it gets a icon", async () => {
-    const res = await minehut.icons.getByItem("GOLDEN_PICKAXE");
+    const res = await minehut.icons.resolve("GOLDEN_PICKAXE");
     expect(res).toEqual({
         id: "5e74715ead31770058c5f29e",
         displayName: "Golden Pickaxe",

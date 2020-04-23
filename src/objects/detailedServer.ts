@@ -1,7 +1,11 @@
-import { Icon } from "./icon";
-import { Plugin } from "./plugin";
+import { Icon, IconResolvable } from "./icon";
+import { Plugin, PluginResolvable } from "./plugin";
 import { KVManager } from "../managers/kvManager";
 import { Minehut } from "../minehut";
+import FormData from "form-data";
+import path from "path";
+import fs from "fs";
+import fetch from "node-fetch";
 
 interface RawDetailedServer {
     credits_per_day: number;
@@ -101,6 +105,176 @@ export interface DetailedServer {
 
 export class DetailedServer {
     constructor(public client: Minehut) {}
+
+    async setName(name: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/change_name`, "POST", {
+            name
+        });
+    }
+
+    async start(service: boolean = true) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        if (service)
+            await this.client.fetch(`/server/${this.id}/start_service`, "POST");
+        else await this.client.fetch(`/server/${this.id}/start`, "POST");
+    }
+
+    async restart() {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/restart`, "POST");
+    }
+
+    async stop(service: boolean = false) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        if (!service)
+            await this.client.fetch(`/server/${this.id}/shutdown`, "POST");
+        else
+            await this.client.fetch(
+                `/server/${this.id}/destroy_service`,
+                "POST"
+            );
+    }
+
+    async setMOTD(motd: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/change_motd`, "POST", {
+            motd
+        });
+    }
+
+    async sendCommand(command: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/send_command`, "POST", {
+            command
+        });
+    }
+
+    async setVisibility(visibility: boolean) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/visibility`, "POST", {
+            visibility
+        });
+    }
+
+    async purchaseIcon(resolvable: IconResolvable) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const icon = await this.client.icons.resolve(resolvable);
+        if (!icon) throw new Error("Icon not found.");
+        await this.client.fetch(`/server/${this.id}/icon/purchase`, "POST", {
+            icon_id: icon
+        });
+    }
+
+    async setIcon(resolvable: IconResolvable | null) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const icon = resolvable
+            ? await this.client.icons.resolve(resolvable)
+            : undefined;
+        if (resolvable && !icon) throw new Error("Icon not found.");
+        await this.client.fetch(`/server/${this.id}/icon/equip`, "POST", {
+            icon_id: icon ? icon.id : undefined
+        });
+    }
+
+    async editProps(props: Partial<ServerProps>) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const fetchArray: Promise<void>[] = [];
+        Object.entries(props).forEach(
+            ([field, value]: [
+                string,
+                string | boolean | number | undefined
+            ]) => {
+                fetchArray.push(
+                    this.client.fetch(
+                        `/server/${this.id}/edit_server_properties`,
+                        "POST",
+                        {
+                            field: field.replace(
+                                /[A-Z]/g,
+                                (e) => "_" + e.toLowerCase()
+                            ),
+                            value
+                        }
+                    )
+                );
+            }
+        );
+        await Promise.all(fetchArray);
+    }
+
+    async installPlugin(resolvable: PluginResolvable) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const plugin = await this.client.plugins.resolve(resolvable);
+        if (!plugin) throw new Error("Plugin not found.");
+        await this.client.fetch(`/server/${this.id}/install_plugin`, "POST", {
+            plugin: plugin.id
+        });
+    }
+
+    async removePlugin(resolvable: PluginResolvable) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const plugin = await this.client.plugins.resolve(resolvable);
+        if (!plugin) throw new Error("Plugin not found.");
+        await this.client.fetch(`/server/${this.id}/remove_plugin`, "POST", {
+            plugin: plugin.id
+        });
+    }
+
+    async resetPluginData(resolvable: PluginResolvable) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const plugin = await this.client.plugins.resolve(resolvable);
+        if (!plugin) throw new Error("Plugin not found.");
+        await this.client.fetch(
+            `/server/${this.id}/remove_plugin_data`,
+            "POST",
+            {
+                plugin: plugin.id
+            }
+        );
+    }
+
+    async saveWorld() {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/save`, "POST");
+    }
+
+    async resetWorld() {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/server/${this.id}/reset_world`, "POST");
+    }
+
+    async uploadWorld(filePath: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        const e = new Error();
+        filePath = path.join(
+            path.dirname(
+                (e.stack as string)
+                    .split("\n")[2]
+                    .replace(/ +at /g, "")
+                    .replace(/:\d+:\d+$/, "")
+            ),
+            filePath
+        );
+        const formData = new FormData();
+        formData.append("file", fs.createReadStream(filePath));
+        await this.client.fetch(
+            `/file/world/upload/${this.id}`,
+            "POST",
+            formData,
+            formData.getHeaders()
+        );
+    }
+
+    async reset() {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        this.client.fetch(`/server/${this.id}/reset_all`, "POST");
+    }
+
+    async repairFiles() {
+        if (!this.client.auth) throw new Error("not logged in.");
+        this.client.fetch(`/server/${this.id}/repair_files`, "POST");
+    }
 }
 
 export class DetailedServerManager extends KVManager<
