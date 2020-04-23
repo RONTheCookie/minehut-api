@@ -47,9 +47,16 @@ export class IconManager extends BaseManager<RawIcon[], Icon[]> {
     }
 
     async resolve(resolvable: IconResolvable) {
-        if (!this.cache) this.cache = await this.fetch(false);
-        if (typeof resolvable === "object" && resolvable.id)
-            return this.cache.find((i) => resolvable.id === i.id);
-        return this.cache.find((i) => resolvable === i.id);
+        const icons = await this.fetch();
+        if (typeof resolvable == "string") {
+            return icons.find(
+                (i) =>
+                    i.id == resolvable ||
+                    i.iconName == resolvable ||
+                    i.displayName == resolvable
+            );
+        } else {
+            return icons.find((i) => i.id == resolvable.id);
+        }
     }
 }

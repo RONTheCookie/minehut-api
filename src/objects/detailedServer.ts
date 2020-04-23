@@ -108,7 +108,7 @@ export class DetailedServer {
 
     async setName(name: string) {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/change_name`, "POST", {
+        await this.client.fetch(`/server/${this.id}/change_name`, "POST", {
             name
         });
     }
@@ -116,24 +116,21 @@ export class DetailedServer {
     async start(service: boolean = true) {
         if (!this.client.auth) throw new Error("Not logged in.");
         if (service)
-            await this.client.fetchJSON(
-                `/server/${this.id}/start_service`,
-                "POST"
-            );
-        else await this.client.fetchJSON(`/server/${this.id}/start`, "POST");
+            await this.client.fetch(`/server/${this.id}/start_service`, "POST");
+        else await this.client.fetch(`/server/${this.id}/start`, "POST");
     }
 
     async restart() {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/restart`, "POST");
+        await this.client.fetch(`/server/${this.id}/restart`, "POST");
     }
 
     async stop(service: boolean = false) {
         if (!this.client.auth) throw new Error("Not logged in.");
         if (!service)
-            await this.client.fetchJSON(`/server/${this.id}/shutdown`, "POST");
+            await this.client.fetch(`/server/${this.id}/shutdown`, "POST");
         else
-            await this.client.fetchJSON(
+            await this.client.fetch(
                 `/server/${this.id}/destroy_service`,
                 "POST"
             );
@@ -141,21 +138,21 @@ export class DetailedServer {
 
     async setMOTD(motd: string) {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/change_motd`, "POST", {
+        await this.client.fetch(`/server/${this.id}/change_motd`, "POST", {
             motd
         });
     }
 
     async sendCommand(command: string) {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/send_command`, "POST", {
+        await this.client.fetch(`/server/${this.id}/send_command`, "POST", {
             command
         });
     }
 
     async setVisibility(visibility: boolean) {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/visibility`, "POST", {
+        await this.client.fetch(`/server/${this.id}/visibility`, "POST", {
             visibility
         });
     }
@@ -164,13 +161,9 @@ export class DetailedServer {
         if (!this.client.auth) throw new Error("Not logged in.");
         const icon = await this.client.icons.resolve(resolvable);
         if (!icon) throw new Error("Icon not found.");
-        await this.client.fetchJSON(
-            `/server/${this.id}/icon/purchase`,
-            "POST",
-            {
-                icon_id: icon
-            }
-        );
+        await this.client.fetch(`/server/${this.id}/icon/purchase`, "POST", {
+            icon_id: icon
+        });
     }
 
     async setIcon(resolvable: IconResolvable | null) {
@@ -179,7 +172,7 @@ export class DetailedServer {
             ? await this.client.icons.resolve(resolvable)
             : undefined;
         if (resolvable && !icon) throw new Error("Icon not found.");
-        await this.client.fetchJSON(`/server/${this.id}/icon/equip`, "POST", {
+        await this.client.fetch(`/server/${this.id}/icon/equip`, "POST", {
             icon_id: icon ? icon.id : undefined
         });
     }
@@ -193,7 +186,7 @@ export class DetailedServer {
                 string | boolean | number | undefined
             ]) => {
                 fetchArray.push(
-                    this.client.fetchJSON(
+                    this.client.fetch(
                         `/server/${this.id}/edit_server_properties`,
                         "POST",
                         {
@@ -214,33 +207,25 @@ export class DetailedServer {
         if (!this.client.auth) throw new Error("Not logged in.");
         const plugin = await this.client.plugins.resolve(resolvable);
         if (!plugin) throw new Error("Plugin not found.");
-        await this.client.fetchJSON(
-            `/server/${this.id}/install_plugin`,
-            "POST",
-            {
-                plugin: plugin.id
-            }
-        );
+        await this.client.fetch(`/server/${this.id}/install_plugin`, "POST", {
+            plugin: plugin.id
+        });
     }
 
     async removePlugin(resolvable: PluginResolvable) {
         if (!this.client.auth) throw new Error("Not logged in.");
         const plugin = await this.client.plugins.resolve(resolvable);
         if (!plugin) throw new Error("Plugin not found.");
-        await this.client.fetchJSON(
-            `/server/${this.id}/remove_plugin`,
-            "POST",
-            {
-                plugin: plugin.id
-            }
-        );
+        await this.client.fetch(`/server/${this.id}/remove_plugin`, "POST", {
+            plugin: plugin.id
+        });
     }
 
     async resetPluginData(resolvable: PluginResolvable) {
         if (!this.client.auth) throw new Error("Not logged in.");
         const plugin = await this.client.plugins.resolve(resolvable);
         if (!plugin) throw new Error("Plugin not found.");
-        await this.client.fetchJSON(
+        await this.client.fetch(
             `/server/${this.id}/remove_plugin_data`,
             "POST",
             {
@@ -251,12 +236,12 @@ export class DetailedServer {
 
     async saveWorld() {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/save`, "POST");
+        await this.client.fetch(`/server/${this.id}/save`, "POST");
     }
 
     async resetWorld() {
         if (!this.client.auth) throw new Error("Not logged in.");
-        await this.client.fetchJSON(`/server/${this.id}/reset_world`, "POST");
+        await this.client.fetch(`/server/${this.id}/reset_world`, "POST");
     }
 
     async uploadWorld(filePath: string) {
@@ -283,12 +268,12 @@ export class DetailedServer {
 
     async reset() {
         if (!this.client.auth) throw new Error("Not logged in.");
-        this.client.fetchJSON(`/server/${this.id}/reset_all`, "POST");
+        this.client.fetch(`/server/${this.id}/reset_all`, "POST");
     }
 
     async repairFiles() {
         if (!this.client.auth) throw new Error("not logged in.");
-        this.client.fetchJSON(`/server/${this.id}/repair_files`, "POST");
+        this.client.fetch(`/server/${this.id}/repair_files`, "POST");
     }
 }
 

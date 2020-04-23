@@ -11,7 +11,7 @@ export abstract class KVManager<O, T> {
         }
         const res = await this.transform(
             key,
-            (await this.client.fetchJSON(this.url.split("%s").join(key))) as O
+            (await this.client.fetch(this.url.split("%s").join(key))) as O
         );
         if (cacheEnabled) this.cache.set(key, res);
         return res;

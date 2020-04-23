@@ -9,7 +9,7 @@ export abstract class BaseManager<O, T> {
             return this.cache;
         }
         const res = await this.transform(
-            (await this.client.fetchJSON(this.url)) as O
+            (await this.client.fetch(this.url)) as O
         );
         if (cache) this.cache = res;
         return res;

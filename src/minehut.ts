@@ -1,10 +1,10 @@
-import fetch from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
 import { IconManager } from "./objects/icon";
 import { ServerManager } from "./objects/server";
 import { PluginManager } from "./objects/plugin";
 import { UserManager, User } from "./objects/user";
-import { stringify } from "querystring";
 import { MinehutError } from ".";
+import FormData from "form-data";
 
 export class Minehut {
     BASE_URL = "https://api.minehut.com";
@@ -15,46 +15,10 @@ export class Minehut {
     user?: User;
     auth?: { sessionId: string; token: string };
 
-    async fetchJSON(path: string, method: string = "GET", body?: object) {
-        const settings = {
-            method,
-            headers: {
-                "User-Agent": `node-minehut-api/${
-                    require("../package.json").version
-                }`,
-                "Content-Type": body ? "application/json" : "",
-                Accept: "application/json",
-                Authorization: this.auth?.token || "",
-                "X-Session-Id": this.auth?.sessionId || ""
-            },
-            body: JSON.stringify(body)
-        };
-        const res = await fetch(this.BASE_URL + path, settings);
-        const resBody = await res.json();
-        if (process.env.DEBUG == "minehut-api") {
-            console.debug(`HTTP ${method}: ${path}`);
-            console.debug({ reqBody: body, resBody });
-        }
-
-        if (resBody.error)
-            throw new MinehutError(
-                resBody.error.substring(6, resBody.error.length),
-                path,
-                `${res.status} ${res.statusText}`
-            );
-        if (!res.ok)
-            throw new MinehutError(
-                `Error while fetching ${method} ${path}`,
-                path,
-                `${res.status} ${res.statusText}`
-            );
-        return resBody;
-    }
-
     async fetch(
         path: string,
         method: string = "GET",
-        body?: any,
+        body?: object | FormData,
         headers?: object
     ) {
         const settings = {
@@ -63,12 +27,16 @@ export class Minehut {
                 "User-Agent": `node-minehut-api/${
                     require("../package.json").version
                 }`,
+                "Content-Type": "application/json", // headers can override
                 ...headers,
                 Authorization: this.auth?.token || "",
                 "X-Session-Id": this.auth?.sessionId || ""
-            },
-            body
-        };
+            }
+        } as RequestInit;
+        if (body) {
+            if (body instanceof FormData) settings.body = body;
+            else settings.body = JSON.stringify(body);
+        }
         const res = await fetch(this.BASE_URL + path, settings);
         const resBody = await res.json();
         if (process.env.DEBUG == "minehut-api") {
@@ -78,7 +46,7 @@ export class Minehut {
 
         if (resBody.error)
             throw new MinehutError(
-                resBody.error.substring(6, resBody.error.length),
+                resBody.error,
                 path,
                 `${res.status} ${res.statusText}`
             );
@@ -92,7 +60,7 @@ export class Minehut {
     }
 
     async login(email: string, password: string) {
-        const res = (await this.fetchJSON("/users/login", "POST", {
+        const res = (await this.fetch("/users/login", "POST", {
             email,
             password
         })) as {
