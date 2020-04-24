@@ -46,6 +46,50 @@ interface User {
 }
 class User {
     constructor(public client: Minehut) {}
+
+    async changePassword(oldPassword: string, newPassword: string) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        await this.client.fetch(`/users/change_password`, "POST", {
+            email: this.emailInfo.email,
+            password: newPassword,
+            old_password: oldPassword
+        });
+    }
+
+    async purchaseSlots(slots: number) {
+        if (!this.client.auth) throw new Error("Not logged in.");
+        if (slots < 1 || slots + this.maxServers > 10)
+            throw new Error("Invalid number of slots.");
+        if (slots * 400 < this.credits) throw new Error("Not enough credits.");
+        await this.client.fetch(`/servers/purchase`, "POST", {
+            server_quantity: slots
+        });
+        this.maxServers += slots;
+        this.credits -= slots * 400;
+    }
+
+    async createServer(name: string) {
+        const getServer = () => {
+            return new Promise((resolve) => {
+                const interval = setInterval(async () => {
+                    const u = await this.client.users.fetch(this.id);
+                    const s = u.servers.find((s) => s.name === name);
+                    if (s) {
+                        clearInterval(interval);
+                        resolve(s);
+                    }
+                }, 500);
+            });
+        };
+
+        if (!this.client.auth) throw new Error("Not logged in.");
+        if (name.length > 10) throw new Error("Name too long.");
+        await this.client.fetch(`/servers/create`, "POST", {
+            name,
+            platform: "java"
+        });
+        return await getServer();
+    }
 }
 
 export class UserManager extends KVManager<RawUserResponse, User> {
