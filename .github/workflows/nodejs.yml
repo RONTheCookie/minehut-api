@@ -28,3 +28,5 @@ jobs:
     - run: yarn test
       env:
         CI: true
+        EMAIL: ${{ secrets.EMAIL }}
+        PASSWORD: ${{ secrets.PASSWORD }}
